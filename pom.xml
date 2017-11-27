@@ -207,6 +207,40 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>Generate JDBC source connector config docs</id>
+                        <!-- Include the phase to have it run automatically -->
+                        <phase>install</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>io.confluent.connect.jdbc.source.JdbcSourceConnectorConfig</mainClass>
+                            <classpathScope>test</classpathScope>
+                            <arguments>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Generate JDBC sink connector config docs</id>
+                        <!-- Include the phase to have it run automatically -->
+                        <phase>install</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>io.confluent.connect.jdbc.sink.JdbcSinkConfig</mainClass>
+                            <classpathScope>test</classpathScope>
+                            <arguments>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -401,6 +435,30 @@
                                     </includes>
                                 </fileset>
                             </filesets>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>docs</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <mainClass>io.confluent.connect.jdbc.source.JdbcSourceConnectorConfig</mainClass>
+                            <classpathScope>test</classpathScope>
+                            <arguments>
+                            </arguments>
                         </configuration>
                     </plugin>
                 </plugins>
