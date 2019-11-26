@@ -229,6 +229,7 @@ public class GenericDatabaseDialect implements DatabaseDialect {
     }
   }
 
+  @SuppressWarnings("try")
   @Override
   public boolean isConnectionValid(
       Connection connection,
@@ -868,6 +869,7 @@ public class GenericDatabaseDialect implements DatabaseDialect {
    * @param optional   true if the field is to be optional as obtained from the column definition
    * @return the name of the field, or null if no field was added
    */
+  @SuppressWarnings("fallthrough")
   protected String addFieldToSchema(
       final ColumnDefinition columnDefn,
       final SchemaBuilder builder,
@@ -984,7 +986,6 @@ public class GenericDatabaseDialect implements DatabaseDialect {
           }
         }
         // fallthrough
-
       case Types.DECIMAL: {
         log.debug("DECIMAL with precision: '{}' and scale: '{}'", precision, scale);
         scale = decimalScale(columnDefn);
@@ -1005,6 +1006,7 @@ public class GenericDatabaseDialect implements DatabaseDialect {
       case Types.CLOB:
       case Types.NCLOB:
       case Types.DATALINK:
+        // fallthrough
       case Types.SQLXML: {
         // Some of these types will have fixed size, but we drop this from the schema conversion
         // since only fixed byte arrays can have a fixed size
@@ -1017,6 +1019,7 @@ public class GenericDatabaseDialect implements DatabaseDialect {
       case Types.BINARY:
       case Types.BLOB:
       case Types.VARBINARY:
+        // fallthrough
       case Types.LONGVARBINARY: {
         builder.field(fieldName, optional ? Schema.OPTIONAL_BYTES_SCHEMA : Schema.BYTES_SCHEMA);
         break;
@@ -1059,6 +1062,7 @@ public class GenericDatabaseDialect implements DatabaseDialect {
       case Types.STRUCT:
       case Types.REF:
       case Types.ROWID:
+        // fallthrough
       default: {
         log.warn("JDBC type {} ({}) not currently supported", sqlType, columnDefn.typeName());
         return null;
@@ -1088,7 +1092,7 @@ public class GenericDatabaseDialect implements DatabaseDialect {
     );
   }
 
-  @SuppressWarnings("deprecation")
+  @SuppressWarnings({"deprecation", "fallthrough"})
   protected ColumnConverter columnConverterFor(
       final ColumnMapping mapping,
       final ColumnDefinition defn,
@@ -1191,7 +1195,6 @@ public class GenericDatabaseDialect implements DatabaseDialect {
           }
         }
         // fallthrough
-
       case Types.DECIMAL: {
         final int precision = defn.precision();
         log.debug("DECIMAL with precision: '{}' and scale: '{}'", precision, defn.scale());
@@ -1201,12 +1204,14 @@ public class GenericDatabaseDialect implements DatabaseDialect {
 
       case Types.CHAR:
       case Types.VARCHAR:
+        // fallthrough
       case Types.LONGVARCHAR: {
         return rs -> rs.getString(col);
       }
 
       case Types.NCHAR:
       case Types.NVARCHAR:
+        // fallthrough
       case Types.LONGNVARCHAR: {
         return rs -> rs.getNString(col);
       }

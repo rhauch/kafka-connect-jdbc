@@ -286,6 +286,10 @@ public class JdbcSourceTask extends SourceTask {
     }
   }
 
+  public boolean isClosed() {
+    return dialect != null && cachedConnectionProvider != null;
+  }
+
   @Override
   public List<SourceRecord> poll() throws InterruptedException {
     log.trace("{} Polling for new data");
